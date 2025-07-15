@@ -1,0 +1,19 @@
+---
+- name: Install nginx on ec2
+  hosts: webservers 
+  become: yes 
+  gather_facts: yes
+
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure nginx starts and enable
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+
