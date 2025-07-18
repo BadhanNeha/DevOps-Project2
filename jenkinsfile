@@ -1,10 +1,10 @@
-# 🧪 Jenkins CI/CD Pipeline with Docker - Node.js App
+#  Jenkins CI/CD Pipeline with Docker - Node.js App
 
 This project demonstrates a **CI/CD pipeline using Jenkins** to build a Docker image from a Node.js app and push it to **DockerHub** automatically.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 - **Source Code:** Pulled from GitHub
 - **CI/CD Tool:** Jenkins (installed on AWS EC2)
@@ -14,8 +14,67 @@ This project demonstrates a **CI/CD pipeline using Jenkins** to build a Docker i
 
 ---
 
-## 🚀 CI/CD Flow
+##  CI/CD Flow
 
 ```plaintext
 GitHub Repo → Jenkins Job → Docker Build → Docker Push → DockerHub
+
+
+## Jenkins setup
+
+sudo apt update
+sudo apt install openjdk-11-jdk -y
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
+sudo apt install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+
+## Pipeline Script 
+
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_NAME = "neha2006/neha-node-app:v1"
+  }
+
+  stages {
+    stage('Clone Repo') {
+      steps {
+        git 'https://github.com/BadhanNeha/DevOps-Project2.git'
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        script {
+          sh "docker build -t $IMAGE_NAME docker/"
+        }
+      }
+    }
+
+    stage('Push to DockerHub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          script {
+            sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+            sh "docker push $IMAGE_NAME"
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    failure {
+      echo '❌ Build failed. Check logs.'
+    }
+    success {
+      echo '✅ Image pushed to DockerHub successfully!'
+    }
+  }
+}
 
