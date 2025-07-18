@@ -1,0 +1,21 @@
+# 🧪 Jenkins CI/CD Pipeline with Docker - Node.js App
+
+This project demonstrates a **CI/CD pipeline using Jenkins** to build a Docker image from a Node.js app and push it to **DockerHub** automatically.
+
+---
+
+## 📌 Project Overview
+
+- **Source Code:** Pulled from GitHub
+- **CI/CD Tool:** Jenkins (installed on AWS EC2)
+- **Containerization:** Docker
+- **Registry:** DockerHub
+- **Pipeline:** Clone → Build Image → Push Image
+
+---
+
+## 🚀 CI/CD Flow
+
+```plaintext
+GitHub Repo → Jenkins Job → Docker Build → Docker Push → DockerHub
+
